@@ -26,8 +26,16 @@ const Signup = () => {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:3001/signup", { name, email, password, gender })
+    axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/signup`,
+      { name, email, password, gender },
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
       .then((result) => {
         if (result.status === 201) {
           console.log("User created successfully");
@@ -135,10 +143,10 @@ const Signup = () => {
                 },
               }}
             />
-            <FormControl 
-              fullWidth 
-              required 
-              sx={{ 
+            <FormControl
+              fullWidth
+              required
+              sx={{
                 mb: 2,
                 "& .MuiInputLabel-root": { color: "#CCCCCC" },
                 "& .MuiOutlinedInput-root": {

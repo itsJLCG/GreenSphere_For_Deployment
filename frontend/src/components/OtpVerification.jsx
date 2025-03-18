@@ -64,7 +64,16 @@ const OtpVerification = () => {
 
     const handleVerifyOtp = async (enteredOtp) => {
         try {
-            const response = await axios.post('http://localhost:3001/verify-otp', { email, otp: enteredOtp });
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/verify-otp`,
+                { email, otp: enteredOtp },
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
             if (response.status === 200) {
                 toast.success('OTP Verified Successfully!', {
                     position: "top-center",
@@ -86,7 +95,16 @@ const OtpVerification = () => {
     const handleResendOtp = async () => {
         setIsResending(true);
         try {
-            await axios.post('http://localhost:3001/resend-otp', { email });
+            await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/resend-otp`,
+                { email },
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
             toast.success('New OTP sent to your email!', {
                 position: "top-center",
                 autoClose: 2000,
@@ -104,27 +122,27 @@ const OtpVerification = () => {
     };
 
     return (
-        <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '100vh', 
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
             backgroundColor: '#0d0935',
-            color: 'white' 
+            color: 'white'
         }}>
-            <Paper sx={{ 
-                padding: '2.5rem', 
-                borderRadius: '12px', 
-                maxWidth: '420px', 
-                width: '100%', 
+            <Paper sx={{
+                padding: '2.5rem',
+                borderRadius: '12px',
+                maxWidth: '420px',
+                width: '100%',
                 textAlign: 'center',
                 backgroundColor: '#1a1a3c',
                 boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)'
             }}>
-                
+
                 {/* GreenSphere Logo */}
                 <Box sx={{ mb: 2 }}>
-                    <img 
+                    <img
                         src={greensphereLogo}
                         alt="GreenSphere Logo"
                         style={{ width: "150px" }}
@@ -154,8 +172,8 @@ const OtpVerification = () => {
                             size="small"
                             sx={{
                                 input: {
-                                    textAlign: 'center', 
-                                    fontSize: '22px', 
+                                    textAlign: 'center',
+                                    fontSize: '22px',
                                     width: '50px',
                                     color: '#ffffff'
                                 },
@@ -182,10 +200,10 @@ const OtpVerification = () => {
                 {error && <Typography color="error" sx={{ marginBottom: '1rem' }}>{error}</Typography>}
 
                 {/* Submit Button */}
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    fullWidth 
+                <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
                     sx={{
                         backgroundColor: '#4a47a3',
                         '&:hover': {
@@ -202,12 +220,12 @@ const OtpVerification = () => {
 
                 {/* Resend OTP Section */}
                 <Typography sx={{ color: '#bdbdbd', fontSize: '0.9rem', marginTop: '1rem' }}>
-                    Didn't receive a code?  
+                    Didn't receive a code?
                     {resendCooldown > 0 ? (
                         <strong style={{ color: '#8888ff' }}> Resend in {resendCooldown}s</strong>
                     ) : (
-                        <strong 
-                            onClick={handleResendOtp} 
+                        <strong
+                            onClick={handleResendOtp}
                             style={{ color: '#8888ff', cursor: isResending ? 'not-allowed' : 'pointer' }}
                         >
                             Resend

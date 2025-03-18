@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Line, Bar } from 'react-chartjs-2';
+import axios from 'axios';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,10 +29,21 @@ const EnergyPromoting = () => {
   const [selectedEnergy, setSelectedEnergy] = useState("Wind Energy");
 
   useEffect(() => {
-    fetch('http://localhost:3001/admin/renewable-energy')
-      .then(response => response.json())
-      .then(data => setEnergyData(data))
-      .catch(error => console.error('Error fetching data:', error));
+    const fetchEnergyData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/renewable-energy`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        setEnergyData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchEnergyData();
   }, []);
 
   const handleEnergySelect = (source) => {

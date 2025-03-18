@@ -74,18 +74,28 @@ const AdminHome = () => {
   // Fetch feedback data and user data from the backend
   useEffect(() => {
     // Fetch feedbacks
-    axios.get('http://localhost:3001/admin/feedback', { withCredentials: true })
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/feedback`, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
       .then(response => {
         setFeedbacks(response.data);
-        processFeedbackData(response.data); // Process feedback data for the Pie chart
-        analyzeSentiment(response.data); // Analyze sentiment for the bar chart
+        processFeedbackData(response.data);
+        analyzeSentiment(response.data);
       })
       .catch(error => {
         console.error("There was an error fetching feedback data!", error);
       });
 
     // Fetch users
-    axios.get('http://localhost:3001/admin/users', { withCredentials: true })
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/users`, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
       .then(response => {
         setUsers(response.data);
       })
@@ -94,7 +104,12 @@ const AdminHome = () => {
       });
 
     // Fetch the admin's name
-    axios.get('http://localhost:3001/user', { withCredentials: true })
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
       .then(response => {
         if (response.data.user) {
           setAdminName(response.data.user.name);
@@ -105,7 +120,12 @@ const AdminHome = () => {
       });
 
     // Fetch cost analysis data
-    axios.get('http://localhost:3001/admin/cost-analysis', { withCredentials: true })
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/cost-analysis`, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
       .then(response => {
         setCostAnalysisData(response.data);
       })
@@ -119,13 +139,27 @@ const AdminHome = () => {
     // Fetch renewable energy data
     fetchRenewableData();
 
+    // Replace the existing code with:
     if (activeSection === 'carbonPayback') {
-      axios.get('http://localhost:3001/admin/carbon-payback', { withCredentials: true })
+      axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/carbon-payback`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
         .then(response => {
-          setCarbonPaybackData(response.data);
+          const validData = response.data.map(item => ({
+            user_id: {
+              email: item.user_id?.email || 'N/A'
+            },
+            CarbonPaybackPeriod: item.CarbonPaybackPeriod || 0,
+            TotalCarbonEmission: item.TotalCarbonEmission || 0
+          }));
+          setCarbonPaybackData(validData);
         })
         .catch(error => {
           console.error("There was an error fetching carbon payback data!", error);
+          setCarbonPaybackData([]); // Set empty array on error
         });
     }
   }, [activeSection]);
@@ -174,19 +208,36 @@ const AdminHome = () => {
 
     setSentimentData(sentimentChartData);
   };
-
   const fetchCarbonPaybackData = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/admin/carbon-payback', { withCredentials: true });
-      setCarbonPaybackData(response.data);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/carbon-payback`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const validData = response.data.map(item => ({
+        user_id: {
+          email: item.user_id?.email || 'N/A'
+        },
+        CarbonPaybackPeriod: item.CarbonPaybackPeriod || 0,
+        TotalCarbonEmission: item.TotalCarbonEmission || 0
+      }));
+      setCarbonPaybackData(validData);
     } catch (error) {
       console.error("There was an error fetching carbon payback data!", error);
+      setCarbonPaybackData([]);
     }
   };
 
   const fetchRenewableData = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/admin/renewable-energy', { withCredentials: true });
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/renewable-energy`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       setRenewableData(response.data);
     } catch (error) {
       console.error("There was an error fetching renewable energy data!", error);
@@ -211,20 +262,27 @@ const AdminHome = () => {
   };
 
   // Save the updated role
-  const handleSave = () => {
-    // Send the updated role to the backend
-    axios.put(`http://localhost:3001/admin/users/${selectedUserId}`, { role: selectedRole }, { withCredentials: true })
-      .then(() => {
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user._id === selectedUserId ? { ...user, role: selectedRole } : user
-          )
-        );
-        handleClose(); // Close the modal after saving
-      })
-      .catch((error) => {
-        console.error("There was an error updating the role!", error);
-      });
+  const handleSave = async () => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/users/${selectedUserId}`,
+        { role: selectedRole },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === selectedUserId ? { ...user, role: selectedRole } : user
+        )
+      );
+      handleClose();
+    } catch (error) {
+      console.error("There was an error updating the role!", error);
+    }
   };
 
   const calculateOverallTotals = (data) => {

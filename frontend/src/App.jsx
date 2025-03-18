@@ -27,12 +27,17 @@ function App() {
     const [userName, setUserName] = useState(""); // ✅ Store User's Name
 
     useEffect(() => {
-        axios.get('http://localhost:3001/user', { withCredentials: true })
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => {
                 if (response.data.user) {
                     setIsLoggedIn(true);
                     setUserRole(response.data.user.role);
-                    setUserName(response.data.user.name); // ✅ Store the Name
+                    setUserName(response.data.user.name);
                 } else {
                     setIsLoggedIn(false);
                     setUserRole(null);
@@ -44,7 +49,7 @@ function App() {
                 setUserRole(null);
                 setUserName("");
             });
-    }, [isLoggedIn]); // ✅ Re-run when `isLoggedIn` changes
+    }, [isLoggedIn]);
 
     return (
         <HomeProvider>

@@ -12,13 +12,31 @@ const Logout = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post("http://localhost:3001/logout", null, { withCredentials: true });
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/logout`,
+                {},  // Empty object instead of null
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
             if (response.status === 200) {
                 setIsLoggedIn(false);
                 navigate("/login");
             }
         } catch (error) {
-            console.log("Error logging out", error);
+            console.error("Error logging out:", error);
+            if (error.response) {
+                console.error("Server error:", error.response.data);
+            } else if (error.request) {
+                console.error("No response from server");
+            } else {
+                console.error("Request error:", error.message);
+            }
         }
     };
 
@@ -46,10 +64,10 @@ const Logout = () => {
     const isAdminPage = location.pathname === "/adminhome";
 
     return isAdminPage ? (
-        <ListItem 
-            button 
-            onClick={handleLogout} 
-            sx={{ 
+        <ListItem
+            button
+            onClick={handleLogout}
+            sx={{
                 color: '#FFFFFF', // White text
                 backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
                 border: '1px solid rgba(255, 255, 255, 0.3)', // Subtle border
@@ -70,8 +88,8 @@ const Logout = () => {
             <ListItemText primary="Logout" sx={{ color: '#FFFFFF' }} />
         </ListItem>
     ) : (
-        <Button 
-            sx={buttonStyle} 
+        <Button
+            sx={buttonStyle}
             onClick={handleLogout}
             variant="outlined"
         >

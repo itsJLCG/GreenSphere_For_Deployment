@@ -268,42 +268,40 @@ const TechnoEconomicAnalysis = ({
   const saveData = async () => {
     try {
       // Fetch logged-in user ID from the backend
-      const userResponse = await fetch("http://localhost:3001/user", {
-        method: "GET",
-        credentials: "include", // Required to send cookies/session data
+      const userResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
-
-      if (!userResponse.ok) {
+  
+      if (!userResponse.data) {
         throw new Error("Failed to fetch logged-in user.");
       }
-
-      const userData = await userResponse.json();
-      const user_id = userData.id; // Extract user ID
-
+  
+      const user_id = userResponse.data.user.id; // Extract user ID from axios response
+  
       console.log("✅ Logged-in User ID:", user_id);
-
       console.log("🛠 Debug: Total Product Cost:", totalProductCost);
       console.log("🛠 Debug: Total Installation Cost:", totalInstallationCost);
       console.log("🛠 Debug: Total Maintenance Cost:", totalMaintenanceCost);
       console.log("🛠 Debug: Carbon Payback Period:", carbonPaybackPeriod);
       console.log("🛠 Debug: Total Carbon Emissions:", totalCarbonEmissions);
-      console.log("🛠 Debug: Energy Usage Data:", energyUsageByType);
-
-      // Prepare data
+  
+      // Prepare data objects
       const costAnalysisData = {
         user_id,
         TotalProductCost: parseFloat(totalProductCost),
         TotalInstallationCost: parseFloat(totalInstallationCost),
         TotalMaintenanceCost: parseFloat(totalMaintenanceCost),
       };
-
+  
       const carbonAnalysisData = {
         user_id,
         CarbonPaybackPeriod: parseFloat(carbonPaybackPeriod),
         TotalCarbonEmission: parseFloat(totalCarbonEmissions),
       };
-
-      // Filter out zero-emission energy sources
+  
       const energyUsageData = Object.entries(energyUsageByType)
         .filter(([type, emissions]) => emissions > 0)
         .map(([type, emissions]) => ({
@@ -311,63 +309,64 @@ const TechnoEconomicAnalysis = ({
           Type: type,
           Emissions: parseFloat(emissions),
         }));
-
-      console.log("📩 Sending Cost Analysis:", costAnalysisData);
-      console.log("📩 Sending Carbon Analysis:", carbonAnalysisData);
-      console.log("📩 Sending Filtered Energy Usage:", energyUsageData);
-
-      // Send requests
-      const costResponse = await fetch("http://localhost:3001/api/cost-analysis", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(costAnalysisData),
-      });
-
-      const carbonResponse = await fetch("http://localhost:3001/api/carbon-analysis", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(carbonAnalysisData),
-      });
-
-      const costData = await costResponse.json();  // ✅ Read once
-      const carbonData = await carbonResponse.json();  // ✅ Read once
-
-      console.log("✅ Cost Analysis Response:", costData);
-      console.log("✅ Carbon Analysis Response:", carbonData);
-
+  
+      // Send requests using axios
+      const [costResponse, carbonResponse] = await Promise.all([
+        axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/cost-analysis`,
+          costAnalysisData,
+          {
+            withCredentials: true,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        ),
+        axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/carbon-analysis`,
+          carbonAnalysisData,
+          {
+            withCredentials: true,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        )
+      ]);
+  
       // Send energy usage requests in parallel
-      const energyUsageResponses = await Promise.all(
+      await Promise.all(
         energyUsageData.map((entry) =>
-          fetch("http://localhost:3001/api/energy-usage", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(entry),
-          }).then((res) => res.json()) // Read response once
+          axios.post(
+            `${import.meta.env.VITE_BACKEND_URL}/api/energy-usage`,
+            entry,
+            {
+              withCredentials: true,
+              headers: { 'Content-Type': 'application/json' }
+            }
+          )
         )
       );
-
-      console.log("✅ Energy Usage Responses:", energyUsageResponses);
-
+  
       Swal.fire({
         icon: "success",
         title: "Success",
         text: "Data saved successfully!",
         customClass: {
-          container: 'swal2-container', // Add a custom class for the container
-          popup: 'swal2-popup', // Add a custom class for the popup
+          container: 'swal2-container',
+          popup: 'swal2-popup',
         },
         didOpen: () => {
-          // Manually set the z-index of the SweetAlert modal
           const swalContainer = document.querySelector('.swal2-container');
           if (swalContainer) {
-            swalContainer.style.zIndex = '99999'; // Set a higher z-index than your main modal
+            swalContainer.style.zIndex = '99999';
           }
         }
       });
-
+  
     } catch (error) {
       console.error("❌ Error saving data:", error);
-      alert("Failed to save data.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to save data. Please try again.",
+      });
     }
   };
 
@@ -538,7 +537,12 @@ const TechnoEconomicAnalysis = ({
                     // Fetch user data
                     const fetchUserData = async () => {
                       try {
-                        const response = await axios.get('http://localhost:3001/user', { withCredentials: true });
+                        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+                          withCredentials: true,
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        });
                         return response.data.user; // Assuming the user data is returned in the `user` field
                       } catch (error) {
                         console.error("Error fetching user data:", error);

@@ -30,24 +30,31 @@ const Feedback = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/feedback", {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/feedback`, {
         withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
       setFeedbacks(response.data);
     } catch (err) {
       setError("Failed to fetch feedbacks.");
     }
-  };
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/feedback",
-        { rating, comment },
-        { withCredentials: true }
-      );
-
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/feedback`,
+      { rating, comment },
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
       if (response.status === 201) {
         setComment("");
         setRating(4);

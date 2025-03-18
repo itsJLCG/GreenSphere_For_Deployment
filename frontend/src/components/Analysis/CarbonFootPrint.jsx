@@ -17,8 +17,12 @@ const CarbonFootprint = () => {
   useEffect(() => {
     const fetchCarbonData = async () => {
       try {
-        // Fetch data from your API
-        const response = await axios.get('http://localhost:3001/admin/carbon-payback');
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/carbon-payback`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
         setCarbonData(response.data);
 
         // Calculate aggregated data

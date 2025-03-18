@@ -23,8 +23,9 @@ app.use(express.json());
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"]
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept'],
+    exposedHeaders: ['set-cookie']
 }));
 
 mongoose.connect(process.env.MONGO_URI)
