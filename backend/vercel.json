@@ -18,7 +18,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://green-sphere-for-deployment-frontend.vercel.app/"
+          "value": "https://green-sphere-for-deployment-frontend.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Credentials",
