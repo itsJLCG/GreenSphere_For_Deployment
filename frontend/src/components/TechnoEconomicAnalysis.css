@@ -1,0 +1,109 @@
+/* General Styles */
+.analysis-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #1e293b;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  font-family: "Poppins", sans-serif;
+}
+
+/* Header */
+.analysis-header {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #64748b;
+}
+
+/* Section Headings */
+.analysis-section {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 20px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #64748b;
+}
+
+/* Cost Breakdown Cards */
+.analysis-card {
+  background-color: #334155;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.analysis-card:hover {
+  transform: scale(1.02);
+}
+
+.analysis-card h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.analysis-card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.analysis-card li {
+  font-size: 16px;
+  padding: 4px 0;
+}
+
+/* Total Cost Section */
+.total-cost {
+  font-size: 18px;
+  font-weight: bold;
+  color: #facc15;
+  margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .analysis-container {
+    max-width: 90%;
+    padding: 15px;
+  }
+}
+
+/* Modal Scrollbar */
+.MuiModal-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.MuiBackdrop-root {
+  backdrop-filter: blur(5px);
+}
+
+.MuiPaper-root {
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #64748b #1e293b;
+}
+
+.MuiPaper-root::-webkit-scrollbar {
+  width: 8px;
+}
+
+.MuiPaper-root::-webkit-scrollbar-thumb {
+  background-color: #64748b;
+  border-radius: 4px;
+}
+
+.swal2-container {
+  z-index: 99999 !important; /* Ensure SweetAlert is on top */
+}

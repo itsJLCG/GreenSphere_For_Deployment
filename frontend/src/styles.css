@@ -1,0 +1,150 @@
+/* General Page Styles */
+.feedback-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f0a37, #243b55);
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  /* Feedback Form */
+  .feedback-container {
+    background: #1e2746;
+    padding: 50px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 40px;
+  }
+  
+  .feedback-container textarea {
+    width: 100%;
+    background: #414d73;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    resize: none;
+    height: 100px;
+    margin-bottom: 40px;
+    margin-top: 40px;
+  }
+  
+  .feedback-container button {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    
+  }
+  
+  .feedback-container button:hover {
+    opacity: 0.8;
+  }
+  
+  .feedback-container .error-message {
+    color: #ff7675;
+    margin-top: 10px;
+    font-size: 0.9rem;
+  }
+  
+  /* Feedback Display Section */
+  .feedback-display {
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .rating-section {
+    margin-bottom: 30px;
+  }
+  
+  .feedback-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-evenly; /* Ensures items are evenly spaced */
+  }
+  
+  .feedback-item {
+    background: #3b476c;
+    border-radius: 12px;
+    padding: 50px;
+    width: calc(33.33% - 20px); /* 3 items per row */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    box-sizing: border-box; /* Ensures padding doesn't add to width */
+  }
+  
+  @media (max-width: 768px) {
+    .feedback-item {
+      width: calc(50% - 20px); /* Adjust to 2 items per row on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .feedback-item {
+      width: 100%; /* 1 item per row on very small screens */
+    }
+  }
+  
+  .feedback-display h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+  
+  
+  /* Feedback Items */
+  .feedback-item {
+    background: #2a3556;
+    border-radius: 12px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  }
+  
+  .feedback-comment {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+  
+  .feedback-profile {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px;
+  }
+  
+  .profile-avatar {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  
+  .profile-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  
+  .profile-handle {
+    font-size: 0.8rem;
+    color: #8a9bae;
+  }
+  
+  
