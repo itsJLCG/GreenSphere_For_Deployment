@@ -32,9 +32,9 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.log("Failed to connect to MongoDb", err));
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
-});
+    app.get("/", (req, res) => {
+        res.send("Hello from Vercel Backend!");
+      });
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -394,3 +394,5 @@ app.get("/admin/carbon-payback", async (req, res) => {
 });
 
 
+
+module.exports = app; // 🚀 Required for Vercel
