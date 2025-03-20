@@ -36,15 +36,25 @@ mongoose.connect(process.env.MONGO_URI)
         res.send("Hello from Vercel Backend!");
       });
 
+// Update session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URI
+        mongoUrl: process.env.MONGO_URI,
+        ttl: 24 * 60 * 60 // 1 day
     }),
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // true in production
+        httpOnly: true,
+        sameSite: 'none', // required for cross-domain cookies
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    }
 }));
+
+// Add this before your routes
+app.set('trust proxy', 1); // trust first proxy for secure cookies
 
 app.post("/signup", async (req, res) => {
     try {

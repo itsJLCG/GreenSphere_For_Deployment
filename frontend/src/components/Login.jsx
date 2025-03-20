@@ -32,39 +32,58 @@ const Login = () => {
         { 
           withCredentials: true,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           }
         }
       );
-
+  
       console.log("Login response:", loginResponse.data);
-
+  
+      // Handle OTP verification redirect
       if (loginResponse.data.redirect) {
         toast.info("Please verify your email with the OTP sent to you.", {
           position: "top-right",
           autoClose: 5000,
         });
-
+  
         setTimeout(() => {
           navigate(loginResponse.data.redirect, { state: { email: email } });
         }, 3000);
         return;
       }
-
+  
+      // Handle successful login
       if (loginResponse.data.message === "Success") {
-        toast.success("Login successful!", { position: "top-right", autoClose: 5000 });
-
-        const userRole = loginResponse.data.role;
-        setIsLoggedIn(true);
-        setUserRole(userRole);
-
-        setTimeout(() => {
-          navigate(userRole === "admin" ? "/adminhome" : "/home");
-        }, 3000);
+        // Get user data after login
+        const userResponse = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/user`,
+          {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          }
+        );
+  
+        if (userResponse.data.user) {
+          setIsLoggedIn(true);
+          setUserRole(userResponse.data.user.role);
+          
+          toast.success("Login successful!", {
+            position: "top-right",
+            autoClose: 5000
+          });
+  
+          setTimeout(() => {
+            navigate(userResponse.data.user.role === "admin" ? "/adminhome" : "/home");
+          }, 1000);
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
-
+  
       if (error.response && error.response.status === 401) {
         toast.error(error.response.data.message || "Incorrect credentials!", {
           position: "top-right",
