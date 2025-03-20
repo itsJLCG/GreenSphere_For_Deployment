@@ -165,7 +165,8 @@ app.post("/feedback", async (req, res) => {
     }
 });
 
-app.get("/feedback", async (req, res) => {
+// GET route for retrieving all feedback
+app.get("/feedbacks", async (req, res) => {
     try {
         const feedbacks = await FeedbackModel.find();
         res.status(200).json(feedbacks);

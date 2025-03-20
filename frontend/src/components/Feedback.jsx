@@ -30,7 +30,7 @@ const Feedback = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/feedback`, {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/feedbacks`, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
