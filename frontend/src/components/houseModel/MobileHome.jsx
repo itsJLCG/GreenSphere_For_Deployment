@@ -668,26 +668,29 @@ const WindowMobile = ({ position }) => {
   );
 };
 
-const MobileRoofGrid = ({ onSelect, solarPanels, setSolarPanels }) => {
-  const gridSizeX = 5; // 5x3 grid for the mobile home roof
+const MobileRoofGrid = ({ onSelect }) => {
+  const { solarPanels, setSolarPanels, showSolarPanels } = useContext(HomeContext);
+  const gridSizeX = 5;
   const gridSizeY = 3;
-  const cellSize = 2; // Each cell is 2x2 in size
+  const cellSize = 2;
 
   const handleClick = (row, col) => {
+    if (!showSolarPanels) return; // Only allow clicks when grid is visible
+    
     const cellKey = `${row}-${col}`;
-    // Toggle Solar Panel: Add if not there, remove if already placed
     if (solarPanels.some(([r, c]) => r === row && c === col)) {
       setSolarPanels(solarPanels.filter(([r, c]) => r !== row || c !== col));
     } else {
       setSolarPanels([...solarPanels, [row, col]]);
     }
   };
-
+  
   return (
-    <group position={[0, 4.51, 0]} rotation={[-Math.PI / 2, 0, 0]}> {/* Positioned on top of the mobile home */}
-      {Array.from({ length: gridSizeY }).map((_, row) =>
+    <group position={[0, 4.51, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      {/* Only show grid when showSolarPanels is true */}
+      {showSolarPanels && Array.from({ length: gridSizeY }).map((_, row) =>
         Array.from({ length: gridSizeX }).map((_, col) => {
-          const x = (col - (gridSizeX - 1) / 2) * cellSize; // Centering the grid
+          const x = (col - (gridSizeX - 1) / 2) * cellSize;
           const y = (row - (gridSizeY - 1) / 2) * cellSize;
           const isSelected = solarPanels.some(([r, c]) => r === row && c === col);
 
@@ -708,7 +711,7 @@ const MobileRoofGrid = ({ onSelect, solarPanels, setSolarPanels }) => {
         })
       )}
 
-      {/* Render Solar Panels */}
+      {/* Always render placed solar panels */}
       {solarPanels.map(([row, col], index) => {
         const x = (col - (gridSizeX - 1) / 2) * cellSize;
         const y = (row - (gridSizeY - 1) / 2) * cellSize;
@@ -722,19 +725,20 @@ const MobileHome = ({ roofType, showSolarPanels, showSolarRoofTiles, showSolarWa
   const wallTexture = useTexture("../assets/images/mobilewall.jpg");
   const doorTexture = useTexture("../assets/images/mobiledoor.jpg");
   const wheelTexture = useTexture("../assets/images/wheel.jpg");
-  const [solarPanels, setSolarPanels] = useState([]);
-/*   const [solarWaterHeating, setSolarWaterHeating] = useState([]);
-  const [smallWindTurbines, setSmallWindTurbines] = useState([]);
-  const [verticalAxisWindTurbines, setVerticalAxisWindTurbines] = useState([]);
-  const [microHydroPowerSystem, setMicroHydroPowerSystem] = useState([]);
-  const [picoHydroPower, setPicoHydroPower] = useState([]); */
+  /*   const [solarWaterHeating, setSolarWaterHeating] = useState([]);
+    const [smallWindTurbines, setSmallWindTurbines] = useState([]);
+    const [verticalAxisWindTurbines, setVerticalAxisWindTurbines] = useState([]);
+    const [microHydroPowerSystem, setMicroHydroPowerSystem] = useState([]);
+    const [picoHydroPower, setPicoHydroPower] = useState([]); */
 
-  const { 
+  const {
+    solarPanels, // Add this
+    setSolarPanels, // Add this
     solarWaterHeating,
     smallWindTurbines,
     verticalAxisWindTurbines,
     microHydroPowerSystem,
-    picoHydroPower 
+    picoHydroPower
   } = useContext(HomeContext);
 
   // Shared state for occupied cells
@@ -806,7 +810,9 @@ const MobileHome = ({ roofType, showSolarPanels, showSolarRoofTiles, showSolarWa
       </mesh>
 
       {/* Solar Grid - Only show when `showSolarPanels` is true */}
-      {showSolarPanels && <MobileRoofGrid solarPanels={solarPanels} setSolarPanels={setSolarPanels} />}
+      <MobileRoofGrid onSelect={(row, col) => {
+  // Any additional selection logic can go here
+}} />
 
       {/* Wheels */}
       <mesh position={[-4, 0, 2.5]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -828,8 +834,8 @@ const MobileHome = ({ roofType, showSolarPanels, showSolarRoofTiles, showSolarWa
 
       {/* Renewable Source Components */}
       <SolarWaterHeatingTiles
-/*         solarWaterHeating={solarWaterHeating}
-        setSolarWaterHeating={setSolarWaterHeating} */
+        /*         solarWaterHeating={solarWaterHeating}
+                setSolarWaterHeating={setSolarWaterHeating} */
         showSolarWaterHeating={showSolarWaterHeating}
         occupiedCells={occupiedCells} // Pass occupiedCells here
       />

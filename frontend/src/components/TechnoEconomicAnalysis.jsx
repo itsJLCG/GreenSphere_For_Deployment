@@ -98,7 +98,7 @@ const PRICES = {
     installation: 57600,
     maintenance: 25560,
     carbonEmissions: 2.2,
-    energyProduction: 0,  // Not applicable
+    energyProduction: 300,  // Not applicable
     electricityCost: 12 // Not applicable
   }
 };
